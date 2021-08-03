@@ -33,7 +33,7 @@ export const deleteChosenServer = async (data) => {
 }
 
 export const turnServerOnOF = async (data) => {
-   return fetch('/api/RunServer', {
+    return fetch('/api/RunServer', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -42,6 +42,16 @@ export const turnServerOnOF = async (data) => {
     })
         .then(res => {
             return res.json();
-            
+
+        });
+}
+
+export const currencyApi = async (from, to, amount) => {
+   return fetch(`https://v6.exchangerate-api.com/v6/016ab28fb588d983c8cc8cf7/pair/${from}/${to}/${amount}`)
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => {
+            console.error(err);
         });
 }

@@ -14,11 +14,10 @@ export default function Row(props) {
         switchBtn = 'Turn On';
     }
     const deleteServer = (e) => {
-        deleteChosenServer(data).then(getServersList().then(data => props.setList([...data])));
+        deleteChosenServer(data).then(getServersList().then(data => props.setList({servers:[...data]})));
     }
 
     const turnOnServer = (e) => {
-        // turnServerOnOF(data).then(getServersList().then(list => props.setList([...list])));
         const tempData = { ...data };
         tempData.isRunning = !data.isRunning;
         turnServerOnOF(tempData).then(obj => {
@@ -30,11 +29,11 @@ export default function Row(props) {
         const interval = setInterval(() => {
             if (data.isRunning === true) {
                 setTime((runningTime++));
-                console.log(runningTime);
+
             }
             else {
                 setTime(0);
-                console.log(runningTime);
+
             }
 
         }, 60000);
@@ -47,8 +46,8 @@ export default function Row(props) {
             <td>{data.isRunning === true ? runningTime : 0}</td>
             <td><button onClick={turnOnServer} type="button" className="btn btn-link">{switchBtn}</button></td>
             <td>{data.type.name}</td>
-            <td>{data.isRunning === true? data.type.price * runningTime : data.type.price}</td>
-            <td><button onClick={deleteServer}>Delete</button></td>
+            <td>{data.isRunning === true ? data.type.price * runningTime : data.type.price}</td>
+            <td><button className="btn btn-outline-danger btn-sm" onClick={deleteServer}>Delete</button></td>
         </tr>
     )
 }

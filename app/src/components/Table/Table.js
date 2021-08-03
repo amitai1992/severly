@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import Row from '../Row/Row';
-import { getServersList, getServersTypes, addServer } from '../../services/service';
+import { getServersList, getServersTypes, addServer, currencyApi } from '../../services/service';
+import './Table.css';
 
 
 export default function Table(props) {
-    let [serversList, setList] = useState([]);
+    let [serversAndCurrency, setInfo] = useState(
+        {
+            servers: [],
+            currentCurrency: 'USD'
+        }
+    );
     let [serversTypes, setTypes] = useState([]);
 
+    let currencyController = serversAndCurrency.currentCurrency;
     useEffect(() => {
         getServersList().then(data => {
-            setList(serversList = [...data])
+            setInfo({ servers: [...data], currentCurrency: currencyController })
         });
     }, []);
 
@@ -35,10 +42,10 @@ export default function Table(props) {
     });
 
 
-    serversList.forEach(server => {
-        let row = <Row data={server} setList = {setList} />
+    serversAndCurrency.servers.forEach(server => {
+        let row = <Row data={server} setList={setInfo} />
         rows.push(row);
-    })
+    });
 
     const addNewServer = (e) => {
         const name = document.getElementById('serverName').value;
@@ -66,15 +73,32 @@ export default function Table(props) {
                 },
                 isRunning: false
             }
-            addServer(newServer).then(getServersList().then(data => { setList([...data]) }));
+            addServer(newServer).then(getServersList().then(data => { setInfo({ servers: [...data] }) }));
         }
+    }
 
+    const changeCurrency = (e) => {
+        let newCurrency = e.target.value;
+        let current = serversAndCurrency.currentCurrency;
+        let tempServers = [...serversAndCurrency.servers];
+        let amount = 0;
+        for (let i = 0; i < tempServers.length; i++) {
+            amount = tempServers[i].type.price;
+            currencyApi(current, newCurrency, amount).then(res => {
+                tempServers[i].type.price = res.conversion_result
+            
+            });
+        }
+        setInfo({
+            servers:[...tempServers],
+            currentCurrency: newCurrency
+        });
 
     }
 
     return (
         <div>
-            <table className='table' >
+            <table className='table table-bordered table-sm table-servers' >
                 <thead>
                     <tr>
                         {tHeads}
@@ -83,16 +107,22 @@ export default function Table(props) {
                 <tbody>
                     {rows}
                 </tbody>
-            </table>
-            <div>
-                <input id='serverName' type='text' placeholder='server name' />
-                <input id='serverIp' type='text' placeholder='server ip' />
+            </table >
+            {/* <select id="currency" onChange={changeCurrency}>
+                <option value="USD">USD</option>
+                <option value="ILS">ILS</option>
+                <option value="EUR">EUR</option>
+            </select> */}
+
+            <div className='input-row'>
+                <input className='form-filed input-filed' id='serverName' type='text' placeholder='server name' />
+                <input className='form-filed input-filed'  id='serverIp' type='text' placeholder='server ip' />
             </div>
-            <div>
-                <select id='serverType'>
+            <div className='input-row'>
+                <select className='form-filed input-filed'  id='serverType'>
                     {toggleTypes}
                 </select>
-                <button onClick={addNewServer}>Add Server</button>
+                <button className='btn btn-primary btn-sm form-filed add-btn' onClick={addNewServer}>Add Server</button>
             </div>
         </div>
     )

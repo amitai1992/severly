@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { deleteChosenServer, getServersList, turnServerOnOF } from '../../services/service';
 export default function Row(props) {
     let [runningTime, setTime] = useState(0);
+    let [data, setData] = useState({ ...props.data });
 
-    let data = props.data;
+
     let switchBtn = '';
 
     if (data.isRunning) {
@@ -17,28 +18,36 @@ export default function Row(props) {
     }
 
     const turnOnServer = (e) => {
-        data.isRunning = !data.isRunning;
-        turnServerOnOF(data).then(getServersList().then(list => props.setList([...list])));
+        // turnServerOnOF(data).then(getServersList().then(list => props.setList([...list])));
+        const tempData = { ...data };
+        tempData.isRunning = !data.isRunning;
+        turnServerOnOF(tempData).then(obj => {
+            setData(obj);
+        });
     }
 
     useEffect(() => {
-        if (data.isRunning) {
-            const interval = setInterval(() => {
-                setTime(runningTime++);
+        const interval = setInterval(() => {
+            if (data.isRunning === true) {
+                setTime((runningTime++));
                 console.log(runningTime);
-            }, 60000);
-            return () => clearInterval(interval);
-        }
-         // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
-    }, [])
+            }
+            else {
+                setTime(0);
+                console.log(runningTime);
+            }
+
+        }, 60000);
+        return () => clearInterval(interval);
+    })
     return (
         <tr>
             <td>{data.ip}</td>
             <td>{data.name}</td>
-            <td>{runningTime}</td>
+            <td>{data.isRunning === true ? runningTime : 0}</td>
             <td><button onClick={turnOnServer} type="button" className="btn btn-link">{switchBtn}</button></td>
             <td>{data.type.name}</td>
-            <td>{data.type.price * runningTime}</td>
+            <td>{data.isRunning === true? data.type.price * runningTime : data.type.price}</td>
             <td><button onClick={deleteServer}>Delete</button></td>
         </tr>
     )

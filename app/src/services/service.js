@@ -21,7 +21,7 @@ export const addServer = async (data) => {
 }
 
 export const deleteChosenServer = async (data) => {
-    
+
     fetch('/api/deleteServer', {
         method: 'POST',
         headers: {
@@ -33,12 +33,15 @@ export const deleteChosenServer = async (data) => {
 }
 
 export const turnServerOnOF = async (data) => {
-    fetch('/api/RunServer', {
+   return fetch('/api/RunServer', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
     })
-        .then(res => { return res.json() });
+        .then(res => {
+            return res.json();
+            
+        });
 }

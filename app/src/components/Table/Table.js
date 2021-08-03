@@ -11,6 +11,7 @@ export default function Table(props) {
             currentCurrency: 'USD'
         }
     );
+    
     let [serversTypes, setTypes] = useState([]);
 
     let currencyController = serversAndCurrency.currentCurrency;
@@ -57,12 +58,15 @@ export default function Table(props) {
         if (name === '' || name === undefined) {
             alert('please add name');
         }
+
         else if (ip === '' || ip === undefined) {
             alert('please add ip');
         }
+
         else if (type === undefined) {
             alert('please choose type');
         }
+
         else {
             const newServer = {
                 name: name,
@@ -85,15 +89,13 @@ export default function Table(props) {
         for (let i = 0; i < tempServers.length; i++) {
             amount = tempServers[i].type.price;
             currencyApi(current, newCurrency, amount).then(res => {
-                tempServers[i].type.price = res.conversion_result
-            
+                tempServers[i].type.price = res.conversion_result 
             });
         }
         setInfo({
             servers:[...tempServers],
             currentCurrency: newCurrency
         });
-
     }
 
     return (

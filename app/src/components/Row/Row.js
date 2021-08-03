@@ -4,15 +4,16 @@ export default function Row(props) {
     let [runningTime, setTime] = useState(0);
     let [data, setData] = useState({ ...props.data });
 
-
     let switchBtn = '';
 
     if (data.isRunning) {
         switchBtn = 'Turn Off';
     }
+    
     else {
         switchBtn = 'Turn On';
     }
+
     const deleteServer = (e) => {
         deleteChosenServer(data).then(getServersList().then(data => props.setList({servers:[...data]})));
     }
@@ -29,16 +30,14 @@ export default function Row(props) {
         const interval = setInterval(() => {
             if (data.isRunning === true) {
                 setTime((runningTime++));
-
             }
             else {
                 setTime(0);
-
             }
-
         }, 60000);
         return () => clearInterval(interval);
-    })
+    });
+
     return (
         <tr>
             <td>{data.ip}</td>

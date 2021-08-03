@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { deleteChosenServer, getServersList, turnServerOnOF } from '../../services/service';
 export default function Row(props) {
-    let [runningTime, setTime] = useState(0);
-    let [data, setData] = useState({ ...props.data });
 
-    let switchBtn = '';
+    let [runningTime, setTime] = useState(0); // initialize running time
+    let [data, setData] = useState({ ...props.data }); // data of the server
+
+    let switchBtn = ''; // if server running it will be Turn Off else Turn On
 
     if (data.isRunning) {
         switchBtn = 'Turn Off';
@@ -14,11 +15,11 @@ export default function Row(props) {
         switchBtn = 'Turn On';
     }
 
-    const deleteServer = (e) => {
+    const deleteServer = (e) => { // delete the server and rerender table component
         deleteChosenServer(data).then(getServersList().then(data => props.setList({servers:[...data]})));
     }
 
-    const turnOnServer = (e) => {
+    const turnOnServer = (e) => { // turn on/off server
         const tempData = { ...data };
         tempData.isRunning = !data.isRunning;
         turnServerOnOF(tempData).then(obj => {
@@ -26,7 +27,7 @@ export default function Row(props) {
         });
     }
 
-    useEffect(() => {
+    useEffect(() => { // every minute run the function
         const interval = setInterval(() => {
             if (data.isRunning === true) {
                 setTime((runningTime++));

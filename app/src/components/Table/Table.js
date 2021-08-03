@@ -3,52 +3,51 @@ import Row from '../Row/Row';
 import { getServersList, getServersTypes, addServer, currencyApi } from '../../services/service';
 import './Table.css';
 
-
 export default function Table(props) {
     let [serversAndCurrency, setInfo] = useState(
         {
-            servers: [],
-            currentCurrency: 'USD'
+            servers: [], // servers list
+            currentCurrency: 'USD' // current currency
         }
     );
     
-    let [serversTypes, setTypes] = useState([]);
+    let [serversTypes, setTypes] = useState([]); // types of server
 
     let currencyController = serversAndCurrency.currentCurrency;
-    useEffect(() => {
+    useEffect(() => { // get the list of servers from the data base
         getServersList().then(data => {
             setInfo({ servers: [...data], currentCurrency: currencyController })
         });
     }, []);
 
-    useEffect(() => {
+    useEffect(() => { // get types from database
         getServersTypes().then(data => {
             setTypes(serversTypes = [...data]);
         });
     }, []);
 
-    let rowHeadlines = ['Ip', 'Server Name', 'Time Running', 'Toggle', 'Type', 'Price', 'Delete'];
-    let tHeads = [];
-    let rows = [];
-    let toggleTypes = [];
+    let rowHeadlines = ['Ip', 'Server Name', 'Time Running', 'Toggle', 'Type', 'Price', 'Delete']; // table headlines
+    let tHeads = []; // array of <th>s
+    let rows = []; //array of <Row> component
+    let toggleTypes = []; // array of option for types
 
-    rowHeadlines.forEach(head => {
+    rowHeadlines.forEach(head => { // initilise table headlines
         let htag = <th scope="col">{head}</th>;
         tHeads.push(htag);
     });
 
-    serversTypes.forEach(type => {
+    serversTypes.forEach(type => { // fill toggle with options tags
         let option = <option value={type.price}>{type.name}</option>;
         toggleTypes.push(option);
     });
 
 
-    serversAndCurrency.servers.forEach(server => {
+    serversAndCurrency.servers.forEach(server => { // fill rows array with Rows components
         let row = <Row data={server} setList={setInfo} />
         rows.push(row);
     });
 
-    const addNewServer = (e) => {
+    const addNewServer = (e) => { // add new server to database
         const name = document.getElementById('serverName').value;
         const ip = document.getElementById('serverIp').value;
         const type = document.getElementById('serverType');
@@ -81,7 +80,7 @@ export default function Table(props) {
         }
     }
 
-    const changeCurrency = (e) => {
+    const changeCurrency = (e) => { // didn't finished it
         let newCurrency = e.target.value;
         let current = serversAndCurrency.currentCurrency;
         let tempServers = [...serversAndCurrency.servers];

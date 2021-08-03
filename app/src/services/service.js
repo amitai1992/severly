@@ -1,15 +1,15 @@
 
-export const getServersList = async () => {
+export const getServersList = async () => { // get servers list from the database
     const response = await fetch('/api/getServers');
     return response.json();
 }
 
-export const getServersTypes = async () => {
+export const getServersTypes = async () => { // get types from database
     const res = await fetch('/api/getTypes');
     return res.json();
 }
 
-export const addServer = async (data) => {
+export const addServer = async (data) => { // add server to database
     return fetch('/api/addServer', {
         method: "POST",
         headers: {
@@ -20,7 +20,7 @@ export const addServer = async (data) => {
         .then(res => { return res.json() });
 }
 
-export const deleteChosenServer = async (data) => {
+export const deleteChosenServer = async (data) => { // delete server from database
 
     fetch('/api/deleteServer', {
         method: 'POST',
@@ -32,7 +32,7 @@ export const deleteChosenServer = async (data) => {
         .then(res => { return res.json() });
 }
 
-export const turnServerOnOF = async (data) => {
+export const turnServerOnOF = async (data) => { // change isRunnig of the server
     return fetch('/api/RunServer', {
         method: 'POST',
         headers: {
@@ -46,7 +46,7 @@ export const turnServerOnOF = async (data) => {
         });
 }
 
-export const currencyApi = async (from, to, amount) => {
+export const currencyApi = async (from, to, amount) => { // use currency api for currency changes
    return fetch(`https://v6.exchangerate-api.com/v6/016ab28fb588d983c8cc8cf7/pair/${from}/${to}/${amount}`)
         .then(response => {
             return response.json();
